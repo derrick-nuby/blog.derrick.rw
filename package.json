@@ -2,11 +2,14 @@
   "name": "blog.derrick.rw",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "velite && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "velite:dev": "velite dev",
+    "velite:build": "velite build"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",

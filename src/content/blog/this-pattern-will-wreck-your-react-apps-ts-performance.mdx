@@ -1,9 +1,11 @@
 ---
 title: "This pattern will wreck your React App's TS Performance"
+slug: "this-pattern-will-wreck-your-react-apps-ts-performance"
 description: "Imporve React Typescript performance by replacing type & with interface extends. Boost IDE and tsc speed significantly"
 image: "/images/blog/extends.webp"
 date: "2024-05-30"
 author: "devbertskie"
+published: true
 ---
 
 A couple of years ago, Sentry were having big problems with their React app. They'd pretty recently [migrated it to TypeScript](https://blog.sentry.io/slow-and-steady-converting-sentrys-entire-frontend-to-typescript) from JavaScript. And the app was part of a large monorepo.
@@ -21,10 +23,9 @@ In tons of places in Sentry's codebase, they were extending HTML types in React.
 ```ts
 import React from "react";
 
-type ButtonProps =
-  React.HTMLAttributes<HTMLButtonElement> & {
-    extraProp: string;
-  };
+type ButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
+  extraProp: string;
+};
 
 const Button = ({ extraProp, ...props }: ButtonProps) => {
   console.log(extraProp);

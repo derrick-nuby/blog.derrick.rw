@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
 
 class VeliteWebpackPlugin {
   static started = false;
-  apply(/** @type {import('webpack').Compiler} */ compiler) {
+  apply(/** @type {import('webpack').Compiler} */ compiler: { hooks: { beforeCompile: { tapPromise: (arg0: string, arg1: () => Promise<void>) => void; }; }; options: { mode: string; }; }) {
     compiler.hooks.beforeCompile.tapPromise("VeliteWebpackPlugin", async () => {
       if (VeliteWebpackPlugin.started) return;
       VeliteWebpackPlugin.started = true;

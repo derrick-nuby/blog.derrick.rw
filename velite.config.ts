@@ -1,29 +1,7 @@
-import { defineCollection, defineConfig, s } from "velite";
+import { defineConfig, s } from "velite";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
-
-const computedFields = <T extends { slug: string }>(data: T) => ({
-  ...data,
-  slugAsParams: data.slug.split("/").slice(1).join("/"),
-});
-
-const blogs = defineCollection({
-  name: "Blog",
-  pattern: "blog/**/*.mdx",
-  schema: s
-    .object({
-      slug: s.path(),
-      title: s.string().max(99),
-      description: s.string().max(999),
-      date: s.isodate(),
-      published: s.boolean().default(true),
-      image: s.string().max(99),
-      author: s.string(),
-      body: s.mdx(),
-    })
-    .transform(computedFields),
-});
 
 export default defineConfig({
   root: "./src/content",
@@ -31,13 +9,37 @@ export default defineConfig({
     data: ".velite",
     assets: "public/static",
     base: "/static/",
-    name: "[name]-[hash:6].[text]",
+    name: "[name]-[hash:6].[ext]",
     clean: true,
   },
-  collections: { blogs },
+  collections: {
+    blogs: {
+      name: 'Blog',
+      pattern: 'blog/**/*.mdx',
+      schema: s
+        .object({
+          title: s.string().max(99),
+          slug: s.slug('blogs'), // validate format, unique in blogs collection
+          description: s.string().max(999),
+          date: s.isodate(),
+          published: s.boolean().default(true),
+          image: s.string().optional(), // image path in public directory
+          author: s.string(),
+          metadata: s.metadata(), // extract markdown reading-time, word-count, etc.
+          excerpt: s.excerpt(), // excerpt of markdown content
+          content: s.mdx() // transform mdx to html
+        })
+        // computed fields
+        .transform(data => ({
+          ...data,
+          permalink: `/blog/${data.slug}`,
+          slugAsParams: data.slug.split("/").slice(1).join("/")
+        }))
+    }
+  },
   mdx: {
     rehypePlugins: [
-      rehypeSlug as any,
+      rehypeSlug,
       [rehypePrettyCode, { theme: "dracula" }],
       [
         rehypeAutolinkHeadings,

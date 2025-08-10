@@ -11,12 +11,12 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 
 interface BlogPageItemProps {
-  params: {
+  params: Promise<{
     slug: string[];
-  };
+  }>;
 }
 
-async function getBlogFromParams(params: BlogPageItemProps["params"]) {
+async function getBlogFromParams(params: Awaited<BlogPageItemProps["params"]>) {
   const slug = params?.slug.join("/");
   const blog = allBlogs.find((blog) => blog.slugAsParams === slug);
 
@@ -30,7 +30,8 @@ async function getBlogFromParams(params: BlogPageItemProps["params"]) {
 export async function generateMetadata({
   params,
 }: BlogPageItemProps): Promise<Metadata> {
-  const blog = await getBlogFromParams(params);
+  const resolvedParams = await params;
+  const blog = await getBlogFromParams(resolvedParams);
 
   if (!blog) {
     return {};
@@ -46,7 +47,7 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams(): Promise<
-  BlogPageItemProps["params"][]
+  Awaited<BlogPageItemProps["params"]>[]
 > {
   return allBlogs.map((blog) => ({
     slug: blog.slugAsParams.split("/"),
@@ -54,7 +55,8 @@ export async function generateStaticParams(): Promise<
 }
 
 export default async function BlogPageItem({ params }: BlogPageItemProps) {
-  const blog = await getBlogFromParams(params);
+  const resolvedParams = await params;
+  const blog = await getBlogFromParams(resolvedParams);
 
   if (!blog) {
     return {};
@@ -104,7 +106,7 @@ export default async function BlogPageItem({ params }: BlogPageItemProps) {
             className="my-8 border bg-muted transition-colors"
           />
         )}
-        <Mdx code={blog.body} />
+        <Mdx code={blog.content} />
         <hr className="mt-12" />
         <div className="flex justify-center py-6 lg:py-10">
           <Link
