@@ -26,7 +26,7 @@ export default function BlogPage() {
         <div className="grid gap-10 sm:grid-cols-2">
           {blogs.map((blog) => (
             <article
-              key={blog.slug}
+              key={blog.slugAsParams}
               className="group relative flex flex-col space-y-2"
             >
               {blog.image && (
@@ -52,7 +52,7 @@ export default function BlogPage() {
                 </p>
               )}
 
-              <Link href={blog.slug} className="absolute inset-0">
+              <Link href={blog.permalink} className="absolute inset-0">
                 <span className="sr-only">View Article</span>
               </Link>
             </article>
