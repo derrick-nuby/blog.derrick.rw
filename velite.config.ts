@@ -30,11 +30,14 @@ export default defineConfig({
           content: s.mdx() // transform mdx to html
         })
         // computed fields
-        .transform(data => ({
-          ...data,
-          permalink: `/blog/${data.slug}`,
-          slugAsParams: data.slug.split("/").slice(1).join("/")
-        }))
+        .transform((data) => {
+          const slugAsParams = data.slug;
+          return {
+            ...data,
+            permalink: `/blog/${slugAsParams}`,
+            slugAsParams,
+          };
+        })
     }
   },
   mdx: {
